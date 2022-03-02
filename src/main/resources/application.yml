@@ -1,0 +1,34 @@
+server:
+  port: 8088
+spring:
+  thymeleaf:
+    cache: false 
+  mvc:  
+    pathmatch: #swagger위한설정       matching-strategy: ANT_PATH_MATCHER
+  h2:
+    console:
+      enabled: true
+      path: /h2-console 
+  datasource: 
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        # cammel case 사용시 필요한 설정
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    org:
+      hibernate: 
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
