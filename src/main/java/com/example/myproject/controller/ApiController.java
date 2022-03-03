@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.myproject.dto.BoardRequestDto;
+import com.example.myproject.dto.BoardResponseDto;
 import com.example.myproject.entity.Board;
 import com.example.myproject.service.BoardService;
 
@@ -28,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiController {
 	final private BoardService boardService;
 		@GetMapping(path="board/list")
-		public List<Board> list(
+		public List<BoardResponseDto> list(
 				@RequestParam(required = false) String writer) {
 			//파라미터 없으면 전체 리스트
 			if(writer==null) {
@@ -39,21 +41,26 @@ public class ApiController {
 			return boards;
 		}
 		@GetMapping(path="board/list/{id}")
-		public Board listById(@PathVariable Long id){
-			var board = boardService.findById(id);
-			if(board==null) return null;//bad request
-			return board;
+		public BoardResponseDto listById(@PathVariable Long id){
+			return boardService.findById(id);
 		}
 		
 		@PostMapping("board/create")
 		public ResponseEntity<?> create(@RequestBody BoardRequestDto boardReq) {
 			log.info("글 생성 저장: {}", boardReq);
-			var response = boardService.create(boardReq);
+			var response = boardService.save(boardReq);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 		@PutMapping("board/create/{id}")
-		public void create(@PathVariable("id") Long id) {
-			//글 수정, 업데이트
+		public ResponseEntity<?> create(@PathVariable("id") Long id, BoardRequestDto boardReq) {
+			var response = boardService.update(id, boardReq);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		
+		@DeleteMapping("board/delete/{id}")
+		public ResponseEntity<?> delete(@PathVariable("id") Long id){
+			boardService.delete(id);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 
 }

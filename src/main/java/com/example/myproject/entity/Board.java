@@ -42,6 +42,8 @@ public class Board {
 	@PrePersist
 	public void preCreate() {
 		this.createdDate = LocalDateTime.now();
+		this.deleteYN = 'N';
+		this.views = 0;
 	}
 	@PreUpdate
 	public void preUpdate() {
@@ -61,6 +63,14 @@ public class Board {
 		this.lockLevel = lockLevel;
 		this.views = views;
 		this.deleteYN = deleteYN;
+	}
+	
+	//사용자가 수정시 변경가능한 부분만
+	public void update(String writer, String title, String content, LockLevel lockLevel) {
+		this.writer = writer;//일단 작성자는 맘대로 정할수 있다고 치기
+		this.title = title;
+		this.content = content;
+		this.lockLevel = lockLevel;
 	}
 
 }
