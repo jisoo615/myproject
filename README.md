@@ -18,14 +18,5 @@
 
 페이징 처리와 검색 기능은 mybatis를 사용, 나머지는 jpa 사용
 
-글 작성 수정 삭제 읽기 기능+
-
-페이징 처리
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d237750c-34e5-4be2-a80d-0f25643e3251/Untitled.png)
-
-검색 기능
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/88fbc02e-3106-477b-95c6-901a1f4fc63f/Untitled.png)
-
-회원가입/로그인 기능
+사진과 함께 볼 수 있는 notion 페이지
+https://www.notion.so/ef8cecf991e744cd99303f346bd907c8
