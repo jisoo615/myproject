@@ -45,18 +45,17 @@ public class BoardTests {
 		assertThat(entity.getTitle()).isEqualTo("board save test");
 		assertThat(entity.getContent()).isEqualTo("test success");
 		assertThat(entity.getLockLevel()).isEqualTo(LockLevel.ALL);
-		assertThat(entity.getDeleteYN()).isEqualTo('N');
+		assertThat(entity.getDeleteYn()).isEqualTo('N');
 	}
 	
 	@Test
 	void update() {
 		//이미 저장된 상태에서
 		var request = createTestReq();
-		boardService.save(request);
+		boardService.save(request);// id=1
 		// 수정 요청 받아 처리
 		var updateReqeust = updateTestReq();
-		updateReqeust.setId((long)1);//실제 리퀘스트는 id가 담겨있어서 넣어줌
-		boardService.update(updateReqeust.getId(), updateReqeust);
+		boardService.update((long) 1, updateReqeust);
 		var entity = boardRepo.findById((long) 1).get();
 		
 		assertThat(entity.getId()).isEqualTo(1);
@@ -64,7 +63,8 @@ public class BoardTests {
 		assertThat(entity.getTitle()).isEqualTo("board update test");
 		assertThat(entity.getContent()).isEqualTo("update test success");
 		assertThat(entity.getLockLevel()).isEqualTo(LockLevel.FRIENDS);
-		assertThat(entity.getDeleteYN()).isEqualTo('N');
+		System.out.println(entity.getLockLevel());
+		assertThat(entity.getDeleteYn()).isEqualTo('N');
 		assertThat(entity.getModifiedDate()).isNotNull();
 	}
 	

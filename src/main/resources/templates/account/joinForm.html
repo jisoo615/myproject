@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout_project}">
+
+<th:block layout:fragment="content">
+	<body class="text-center">
+	    
+	<main class="form-signin">
+	  <form th:action="@{/join}" method="post">
+	    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+	  <div class="form-floating">
+		  <input type="text" class="form-control" name="username" id="username" placeholder="username">
+		  <label for="floatingPassword">username</label>
+	  </div>
+	    <div class="form-floating">
+	      <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
+	      <label for="floatingInput">Email address</label>
+	    </div>
+	    <div class="form-floating">
+	      <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
+	      <label for="floatingPassword">Password</label>
+	    </div>
+	
+	    <div class="checkbox mb-3">
+	      <label>
+	        <input type="checkbox" value="remember-me"> Remember me
+	      </label>
+	    </div>
+	    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+		  <a class="w-100 btn btn-lg btn-primary" href="/loginForm">이미 회원가입을 하셨나요?</a>
+	    <p class="mt-5 mb-3 text-muted">© 2022–03</p>
+	  </form>
+	</main>
+	</body>
+</th:block>

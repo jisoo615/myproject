@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout_project}">
+
+<th:block layout:fragment="content">
+	<!-- 글 내용 보기 페이지 -->
+<div class="card">
+
+  <h5 class="card-header" id="title"></h5>
+  
+  <div class="card-body">
+    <p class="card-subtitle mb-2 text-muted" id="writer"></p>
+    <h4 class="card-title" id="content"></h4>
+    
+    <div class="hstack gap-3">
+	    <div class="card-text" id="lock_level"></div>
+	    <div class="card-text" id="views"></div>
+	    <div class="card-text bg-light border" id="createdDate"></div>
+	</div>
+    
+    <a onclick="goList()" class="btn btn-secondary">뒤로가기</a>
+    <a onclick="goWrite()" class="btn btn-primary">수정하기</a>
+    <a onClick="deleteBoard()" class="btn btn-danger">삭제하기</a>
+  </div>
+</div>
+
+</th:block>
+
+<th:block layout:fragment="scripts">
+<!-- js 부분 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    /**
+	 * 페이지 로딩 시점에 실행되는 함수
+	 */
+	window.onload = () => {
+
+		findBoard();
+	}
+	
+	/**
+     * 게시글 조회
+     */
+    function findBoard() {
+
+        const id = /*[[ ${id} ]]*/;
+
+        fetch(`/api/board/${id}`).then(response => {
+        	if (!response.ok) {
+    			throw new Error('Request failed...');
+    	    }
+        	return response.json();
+
+       	}).then(json => {
+       		console.table(json);
+        	json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+
+        	Object.keys(json).forEach(key => {
+         		const elem = document.getElementById(key);
+         		if (elem) {
+          			elem.innerText = json[key];
+         		}
+        	});
+
+       	}).catch(error => {
+        	alert('게시글 정보를 찾을 수 없습니다.');
+        	goList();
+       	});
+    }
+
+    /**
+     * 뒤로가기
+     */
+    function goList() {
+    	location.href = '/project/home';
+    }
+
+    /**
+     * 수정하기
+     */
+    function goWrite() {
+    	location.href = `/project/write?id=[[ ${id} ]]`;
+    }
+
+    /**
+     * 삭제하기
+     */
+    function deleteBoard() {
+
+    	const id = /*[[ ${id} ]]*/;
+
+        if ( !confirm(`${id}번 게시글을 삭제할까요?`) ) {
+        	return false;
+        }
+
+        fetch(`/api/board/${id}`, {
+        	method: 'DELETE',
+          	headers: { 'Content-Type': 'application/json' },
+
+        }).then(response => {
+        	if (!response.ok) {
+           		throw new Error('Request failed...');
+          	}
+
+          	alert('삭제되었습니다.');
+          	goList();
+
+        }).catch(error => {
+        	alert('오류가 발생하였습니다.');
+        });
+	}	
+	
+     /*]]>*/
+</script>
+</th:block>
+
+</html>

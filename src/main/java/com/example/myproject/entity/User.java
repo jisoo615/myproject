@@ -3,19 +3,15 @@ package com.example.myproject.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Builder;
 import lombok.Getter;
 
+@NoArgsConstructor
 @Getter
 @Entity
 public class User {
@@ -23,8 +19,12 @@ public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(nullable = false, unique = true)
 	private String username;
+	//outh2 로그인시 password=null -> nullable=ture 임
+	@Column(length = 100)
 	private String password;
+	@Column(nullable = false)
 	private String email;
 	private String role;//ROLE_USER, ROLE_BUSINESS, ROLE_ADMIN, ROLE_MANNAGER
 	@DateTimeFormat
@@ -32,8 +32,8 @@ public class User {
 	@DateTimeFormat
 	private LocalDateTime modifiedDate;//수정일
 	
-	private String provider;
-	private String providerId;
+	private String provider;  // google
+	private String providerId;// google_123456789
 	
 	@PrePersist
 	public void preCreate() {

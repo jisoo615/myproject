@@ -20,22 +20,33 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//spring security, oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	//h2 in memory
-	runtimeOnly 'com.h2database:h2'
-	//mysql
-	//implementation 'mysql:mysql-connector-java'
+	runtimeOnly 'com.h2database:h2:2.1.210'
 	// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter - 버전오류로 spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER 어플리케이션 설정에 추가해줘야함
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	//타임리프 resources/template 아래
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0')
+	// mybatis framework
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	//mysql
+	//runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	// jasypt 암호화 복호화 https://github.com/ulisesbocchio/jasypt-spring-boot
+	// spring boot 2.5.x 까지만 지원하는듯
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 }
 
 tasks.named('test') {
