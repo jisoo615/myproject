@@ -39,3 +39,6 @@ out/
 ### spring boot ##
 application-dev.yaml
 application-dev.yml
+/settings.gradle
+/gradlew
+/gradlew.bat
