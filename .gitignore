@@ -42,3 +42,4 @@ application-dev.yml
 /settings.gradle
 /gradlew
 /gradlew.bat
+/gradle/
