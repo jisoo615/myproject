@@ -39,7 +39,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
 			</div>
 
 			<div class="btn_wrap text-center">
-				<a th:href="@{/project/home}" class="btn btn-default waves-effect waves-light">뒤로가기</a>
+				<a th:href="@{/project/list}" class="btn btn-default waves-effect waves-light">뒤로가기</a>
 				<button type="button" onclick="save();" class="btn btn-primary waves-effect waves-light">저장하기</button>
 			</div>
 		</form>
@@ -81,7 +81,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
 
 	   	}).catch(error => {
 	    	alert('게시글 정보를 찾을 수 없습니다.');
-	    	location.href = '/project/home';
+	    	location.href = '/project/list';
 	   	});
 	}
 
@@ -148,7 +148,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
     		}
 
     		alert('저장되었습니다.');
-    		location.href = '/project/home';
+    		location.href = '/project/list';
 
     	}).catch(error => {
     		alert('오류가 발생하였습니다.');

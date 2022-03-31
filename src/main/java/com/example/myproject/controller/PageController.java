@@ -14,9 +14,9 @@ public class PageController {
 		return "project/index";
 	}
 	
-	@GetMapping("project/home")
+	@GetMapping("project/list")
 	public String home() {
-		return "project/home";
+		return "project/list";
 	}
 	@GetMapping("project/view/{id}")
 	public String view( @PathVariable Long id,

@@ -21,18 +21,12 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// jasypt 암호화 복호화 https://github.com/ulisesbocchio/jasypt-spring-boot
+	// spring boot 2.5.x 까지만 지원하는듯
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 	//spring security, oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-
-	//h2 in memory safe version
-	runtimeOnly 'com.h2database:h2:1.4.199'
 	// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter - 버전오류로 spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER 어플리케이션 설정에 추가해줘야함
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	//타임리프 resources/template 아래
@@ -40,13 +34,23 @@ dependencies {
 	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0')
 	// mybatis framework
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	// Log4JDBC
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+	compileOnly 'org.projectlombok:lombok'
+
 	//mysql
 	//runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	//h2 in memory safe version:1.4.199
+	runtimeOnly 'com.h2database:h2:1.4.199'
 
-	// jasypt 암호화 복호화 https://github.com/ulisesbocchio/jasypt-spring-boot
-	// spring boot 2.5.x 까지만 지원하는듯
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

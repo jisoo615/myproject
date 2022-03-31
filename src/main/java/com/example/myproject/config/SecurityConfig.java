@@ -22,9 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.authorizeRequests()
-		.antMatchers("/*/**").permitAll()
 		.antMatchers("/",
-				"/api/**").permitAll()
+					"/login","/loginForm","/joinForm",
+					"/project/list").permitAll()
+		.antMatchers("/project/write",
+					"/project/view/**").authenticated() //인증만 되면 들어갈 수 있음
+		.antMatchers("/",
+					"/api/**").permitAll()
 		.antMatchers(
                 "/v3/**",
                 "/v2/**",
