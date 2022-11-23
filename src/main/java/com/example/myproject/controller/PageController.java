@@ -1,11 +1,9 @@
 package com.example.myproject.controller;
 
+import com.example.myproject.dto.JoinFormDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PageController {
@@ -39,13 +37,10 @@ public class PageController {
 	/**
 	 * 로그인 페이지
 	 */
-	@GetMapping("/loginForm")
+	@GetMapping("loginForm")
 	public String loginForm() {
 		return "account/loginForm";
 	}
-	@GetMapping("/joinForm")
-	public String joinForm() {
-		return "account/joinForm";
-	}
+	// 여기서 로그인시 오류나면 표시
 
 }

@@ -1,6 +1,9 @@
 package com.example.myproject.config.oauth;
 
 import com.example.myproject.config.auth.PrincipalDetails;
+import com.example.myproject.config.oauth.provider.GoogleUserInfo;
+import com.example.myproject.config.oauth.provider.KakaoUserInfo;
+import com.example.myproject.config.oauth.provider.OAuth2UserInfo;
 import com.example.myproject.entity.User;
 import com.example.myproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +28,20 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = super.loadUser(userRequest);
-
-        String provider = oauth2User.getAttribute("registrationId");
-        String providerId = oauth2User.getAttribute("sub");
+        OAuth2User oauth2User = super.loadUser(userRequest);// 로그인한 계정 정보
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        String providerId = oauth2User.getName();
         String username = provider+"_"+providerId;
-        String email = oauth2User.getAttribute("email");
-        String password = null;
-        String role = "ROLE_USER";
+        System.out.println(username);
+
+        OAuth2UserInfo info;
+        if(provider.equals("kakao")){
+            info = new KakaoUserInfo(oauth2User.getAttributes());
+        }
+        else if(provider.equals("google")){
+            info = new GoogleUserInfo(oauth2User.getAttributes());
+        }else{
+            System.out.println("지원하지 않는 로그인"); return null;}// 가입 거부?
 
         // 기존 유저 아니면 새로 생성, 가입
         User userEntity = userRepo.findByUsername(username);
@@ -41,9 +50,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                     .provider(provider)
                     .providerId(providerId)
                     .username(username)
-                    .email(email)
-                    .password(password)
-                    .role(role)
+                    .email(info.getEmail())
+                    .password(null)
+                    .role("ROLE_USER")
                     .build();
             userRepo.save(userEntity);
         }
@@ -52,15 +61,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     }
 
  /* OAuth2User 의 내부
-   ClientRegistration{ registrationId='google', clientId='...', clientSecret='...',
-            clientAuthenticationMethod=..., authorizationGrantType=org.springframework.security.oauth2.core.AuthorizationGrantType@5da5e9f3,
-            redirectUri='{baseUrl}/{action}/oauth2/code/{registrationId}', scopes=[email, profile],
-        providerDetails=..., clientName='Google'
-    }
-
+ 구글
+   User Attributes: [{sub=12314352234234, name=kevin oh, given_name=kevin, family_name=oh, picture=https://lh3.googleusercontent.com/a/ALm5wu1t6MnDLqiRHEZq2TVqD7UCOIDPQ=s96-c, email=user1@gmail.com, email_verified=true, locale=ko}]
   * AccessToken:엑세스토큰값
-Attributes:{ sub=3047387102293948, name=..., given_name=.., family_name=..,
-		picture=https://lh3.googleuser..., email=..@google.com., email_verified=true, locale=ko
-		}
   */
+    /*
+    카카오
+   User Attributes: [{id=123124423, connected_at=2022-10-22T14:12:58Z,properties={nickname=케빈},kakao_account={profile_nickname_needs_agreement=false, profile={nickname=케빈}, has_email=true, email_needs_agreement=true}}]
+     */
 }

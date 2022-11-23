@@ -14,8 +14,22 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
     
     <div class="hstack gap-3">
 	    <div class="card-text" id="lock_level"></div>
-	    <div class="card-text" id="views"></div>
-	    <div class="card-text bg-light border" id="createdDate"></div>
+	    조회수: <div class="card-text" id="views"></div>
+	    작성시간: <div class="card-text bg-light border" id="createdDate"></div>
+        <div>
+            <span th:unless="${usernmae}==접속자user정보">빈 하트<button type="button" class="btn btn-outline-secondary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"></path>
+</svg>
+                  <span class="visually-hidden">Button</span>
+                </button></span>
+            <span th:if="${username}==접속자user정보">채운 하트<button type="button" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"></path>
+</svg>
+              </button></span>
+        </div>
+        <div id="heart"></div>
 	</div>
     
     <a onclick="goList()" class="btn btn-secondary">뒤로가기</a>
@@ -34,7 +48,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
 	 * 페이지 로딩 시점에 실행되는 함수
 	 */
 	window.onload = () => {
-
 		findBoard();
 	}
 	

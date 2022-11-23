@@ -24,6 +24,7 @@ public class BoardResponseDto {
     private char deleteYn; // 삭제 여부 'N' 'Y'
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private Long heart;
         
     public BoardResponseDto(Board entity) {// 엔터티 -> 응답
         this.id = entity.getId();
@@ -35,5 +36,6 @@ public class BoardResponseDto {
         this.deleteYn = entity.getDeleteYn();
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
+        this.heart = entity.getHeart();
     }
 }

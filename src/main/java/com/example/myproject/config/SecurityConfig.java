@@ -23,18 +23,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.csrf().disable();
 		http.authorizeRequests()
 		.antMatchers("/",
-					"/login","/loginForm","/joinForm",
-					"/project/list").permitAll()
+					"/login","/loginForm",
+					"/project/list",
+					"/join").permitAll() // 모두 허용
+		.antMatchers("/css/**/*", "/scripts/**/*").permitAll()
+		.antMatchers("/joinForm").anonymous() // 인증되지 않은 자만 접근(인증자접근 안됨)
 		.antMatchers("/project/write",
-					"/project/view/**").authenticated() //인증만 되면 들어갈 수 있음
-		.antMatchers("/",
-					"/api/**").permitAll()
+					"/project/view/**").authenticated() // 인증만 되면 들어갈 수 있음
+		.antMatchers("/api/**").permitAll()
 		.antMatchers(
                 "/v3/**",
                 "/v2/**",
                 "/swagger*/**").permitAll()
 		.antMatchers("/h2-console/**").permitAll()
-        .anyRequest().authenticated()
+        .anyRequest().authenticated() // 이외의 모든 request들은 인증이 되어야만 한다
 		.and()
 				.formLogin()
 				.loginPage("/loginForm")
@@ -47,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.userInfoEndpoint()
 				.userService(principalOAuth2UserService);
 		
-		// http.csrf().ignoringAntMatchers("/h2-console/**"); 이전코드
+		// http.csrf().ignoringAntMatchers("/h2-console/**"); // 이전코드
 		http.headers().frameOptions().disable();
 		/* h2-console 은 iframe을 사용.
 		* Spring security를 사용하면 http header에 X-Frame-Options가 추가되어

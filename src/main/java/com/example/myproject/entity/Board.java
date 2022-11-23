@@ -1,13 +1,10 @@
 package com.example.myproject.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,6 +21,9 @@ public class Board {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	private User user = new User();// TODO: 확인하기
 	private String writer;
 	private String title;
 	private String content;
@@ -35,12 +35,14 @@ public class Board {
 	private LocalDateTime createdDate;//생성일
 	@DateTimeFormat
 	private LocalDateTime modifiedDate;//수정일
-	
+	private Long heart;// 좋아요 수
+
 	@PrePersist
 	public void preCreate() {// insert 전에
 		this.createdDate = LocalDateTime.now();
 		this.deleteYn = 'N';
 		this.views = 0;
+		this.heart = Long.valueOf(0);
 	}
 	@PreUpdate
 	public void preUpdate() {// update 전에
@@ -49,13 +51,14 @@ public class Board {
 	
 	@Builder
 	public Board(String writer, String title, String content, LockLevel lockLevel,
-			int views, char deleteYn) {
+			int views, char deleteYn, User user) {
 		this.writer = writer;
 		this.title = title;
 		this.content = content;
 		this.lockLevel = lockLevel.getKey();
 		this.views = views;
 		this.deleteYn = deleteYn;
+		this.user = user;
 	}
 	
 	//사용자가 수정시 변경가능한 부분만
@@ -74,5 +77,8 @@ public class Board {
 	public void delete() {
 		this.deleteYn = 'Y';
 	}
+	//좋아요 증가/감소 메소드
+	public Long increaseHearts(){this.heart += 1; return this.heart;}
+	public Long decreaseHearts(){this.heart += 1; return this.heart;}
 
 }

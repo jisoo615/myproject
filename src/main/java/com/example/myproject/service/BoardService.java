@@ -1,17 +1,14 @@
 package com.example.myproject.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.myproject.dto.HeartDto;
+import com.example.myproject.entity.Heart;
+import com.example.myproject.entity.User;
+import com.example.myproject.repository.HeartRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistrar;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +30,7 @@ public class BoardService {
 	private final BoardRepository boardRepository;
 	private final BoardMapper boardMapper;
 	private final UserRepository userRepository;
+	private final HeartRepository heartRepository;
 	
 	//최신글 위로가게 전체 조회
 	public List<BoardResponseDto> findAll() {
@@ -49,7 +47,7 @@ public class BoardService {
 	}
 	
 	//상세조회 id로
-	public BoardResponseDto findById(Long id) {
+	public BoardResponseDto findIsHeartedById(Long id) {
 		var entity = boardRepository.findById(id).orElseThrow();
 		entity.increaseViews();// 조회수 증가
 		boardRepository.save(entity);
@@ -65,13 +63,15 @@ public class BoardService {
 	}
 	
 	@Transactional
-	public Board save(BoardRequestDto req) {// 생성저장
+	public Board save(BoardRequestDto req, String username) {// 생성저장
 		Board entity = Board.builder()
 				.content(req.getContent())
 				.lockLevel(req.getLockLevel())
 				.title(req.getTitle())
 				.writer(req.getWriter())
+				.user(userRepository.findByUsername(username))
 				.views(0)
+				.user(userRepository.findByUsername(username))
 				.build();
 		log.info("저장될 글{}", entity);
 		return boardRepository.save(entity);
@@ -91,7 +91,7 @@ public class BoardService {
 	}
 	
 	/**
-	 * 게시글 리스트 조회 - (With. pagination information)
+	 * 게시글 리스트 조회 - (With. pagination information) 이 메소드에선 boardMapper씀 xml참고
 	 */
 	public Map<String, Object> findAll(CommonParams params) {
 
@@ -115,6 +115,29 @@ public class BoardService {
 	    response.put("params", params);
 	    response.put("list", list);
 	    return response;
+	}
+
+	//TODO: 화면에서 한번에 필요한 정보는, 게시글의 하트수, 접속자의 하트 누름 여부임
+	//TODO: heart entity 생성해서 게시글id, 유저id로 속성 정하기. 하트 클릭시 좋아요, 한번 더 클릭시 취소 + jpa 콜렉션
+	public void createHeart(HeartDto dto){// 하트 누름
+		User entity = userRepository.findById(dto.getUserId()).get();
+		heartRepository.save(Heart.builder().boardId(dto.getBoardId()).user(entity).build());
+	}
+	@Transactional
+	public void deleteHeart(Long boardId, Long userId){// 하트 취소
+		heartRepository.deleteByBoardIdAndUserId(boardId, userId);
+		return;
+	}
+
+	public Long findIsHeartedById(Long boardId, Long userId){// 해당 게시글에 접속자가 하트 눌렀는지
+		Optional<Heart> optional = heartRepository.findByBoardIdAndUserId(userId, boardId);
+		if(optional.isEmpty()) return userId = (long)-1;// 누르지 않았으면 return -1
+		return optional.get().getUser().getId();// 눌렀으면 return userId;
+	}
+
+	public Long countByBoardId(Long boardId){// 게시글의 총 하트 수
+		Long total = heartRepository.countByBoardId(boardId);
+		return total;
 	}
 
 }

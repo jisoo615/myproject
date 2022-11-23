@@ -23,7 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// jasypt 암호화 복호화 https://github.com/ulisesbocchio/jasypt-spring-boot
 	// spring boot 2.5.x 까지만 지원하는듯
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 	//spring security, oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -32,10 +32,13 @@ dependencies {
 	//타임리프 resources/template 아래
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0')
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 	// mybatis framework
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
 	// Log4JDBC
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	compileOnly 'org.projectlombok:lombok'
 

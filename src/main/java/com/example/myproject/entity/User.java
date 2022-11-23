@@ -1,7 +1,6 @@
 package com.example.myproject.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.*;
 
@@ -24,11 +23,11 @@ public class User {
 	//outh2 로그인시 password=null -> nullable=ture 임
 	@Column(length = 100)
 	private String password;
-	@Column(nullable = false)
+	@Column(nullable = true)// kakao로그인시 선택사항
 	private String email;
 	private String role;//ROLE_USER, ROLE_BUSINESS, ROLE_ADMIN, ROLE_MANNAGER
 	@DateTimeFormat
-	private LocalDateTime createDate;
+	private LocalDateTime createdDate;
 	@DateTimeFormat
 	private LocalDateTime modifiedDate;//수정일
 	
@@ -37,7 +36,7 @@ public class User {
 	
 	@PrePersist
 	public void preCreate() {
-		this.createDate = LocalDateTime.now();
+		this.createdDate = LocalDateTime.now();
 	}
 	@PreUpdate
 	public void preUpdate() {

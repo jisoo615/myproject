@@ -8,7 +8,7 @@ import com.example.myproject.dto.BoardResponseDto;
 import com.example.myproject.paging.CommonParams;
 
 @Mapper
-public interface BoardMapper {
+public interface BoardMapper {// BoardMapper.xml 참고
 	/**
      * 게시글 수 조회: 검색기준에 따라 totalCount 달라짐
      */

@@ -1,22 +1,19 @@
 package com.example.myproject.controller;
 
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import com.example.myproject.config.auth.PrincipalDetails;
+import com.example.myproject.dto.HeartDto;
+import jdk.jshell.Snippet;
+import org.springframework.http.HttpMessage;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.myproject.dto.BoardRequestDto;
@@ -28,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RestController
+@RestController// = @Controller + @ResponseBpdy
 @RequiredArgsConstructor
 @RequestMapping("api")
 public class ApiController {
@@ -43,15 +40,17 @@ public class ApiController {
 		// 조회
 		@GetMapping(path="board/{id}")
 		public BoardResponseDto listById(@PathVariable Long id){
-			var dto = boardService.findById(id);
+			var dto = boardService.findIsHeartedById(id);
 			log.info("id로 조회하는 api 요청응답:{}", dto);
 			return dto;
 		}
 		//글 생성 create
 		@PostMapping("board")
-		public Long create(@RequestBody BoardRequestDto boardReq) {
+		public Long create(@RequestBody BoardRequestDto boardReq,
+						   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+			String username = principalDetails.getUsername();
 			log.info("글 생성 받은 데이터: {}, {}", boardReq.getTitle(), boardReq.getContent());
-			return boardService.save(boardReq).getId();
+			return boardService.save(boardReq, username).getId();
 		}
 		//수정 update
 		@PatchMapping("board/{id}")
@@ -65,6 +64,31 @@ public class ApiController {
 		public Long delete(@PathVariable("id") Long id){
 			boardService.delete(id);
 			return id;
+		}
+
+		//좋아요 조회
+	// HeartDto => 해당 글을 유저가 눌렀었다면 유저id를, 안눌렀다면 -1값을 가짐 <프론트에선 userid와 접속자의 id가 다르면 빈하트가 되는 원리>. total은 해당 게시글의 총 하트수를 의미함
+	    @GetMapping("heart/{board_id}/{user_id}")// 글을 처음 들어갔을 때 필요한 정보 조회
+		public HeartDto findHeartInfo(@PathVariable("board_id") Long boardId, @RequestBody Long userId){
+			userId = boardService.findIsHeartedById(boardId, userId);
+			Long total = boardService.countByBoardId(boardId);
+			return new HeartDto(boardId, userId, total);
+		}
+		//좋아요 누르기
+		@PatchMapping("heart")
+		public HeartDto doHeart(@RequestBody HeartDto dto){
+			boardService.createHeart(dto);
+			Long total = boardService.countByBoardId(dto.getBoardId());
+			return new HeartDto(dto.getBoardId(), dto.getUserId(), total);
+		}
+		//좋아요 취소
+		@DeleteMapping("heart")
+	    public HeartDto failHeart(@RequestBody HeartDto dto){
+			boardService.deleteHeart(dto.getBoardId(), dto.getUserId());
+			Long total = boardService.countByBoardId(dto.getBoardId());
+			Long userId = (long)-1;
+			// userid=-1, total-=1(삭제하고 count했으니 -1된거임) 해서 보냄
+			return new HeartDto(dto.getBoardId(), userId, total);
 		}
 
 }
