@@ -23,7 +23,7 @@ public class Board {
 	private Long id;
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User user = new User();// TODO: 확인하기
+	private User user = new User();
 	private String writer;
 	private String title;
 	private String content;

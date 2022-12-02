@@ -117,8 +117,6 @@ public class BoardService {
 	    return response;
 	}
 
-	//TODO: 화면에서 한번에 필요한 정보는, 게시글의 하트수, 접속자의 하트 누름 여부임
-	//TODO: heart entity 생성해서 게시글id, 유저id로 속성 정하기. 하트 클릭시 좋아요, 한번 더 클릭시 취소 + jpa 콜렉션
 	public void createHeart(HeartDto dto){// 하트 누름
 		User entity = userRepository.findById(dto.getUserId()).get();
 		heartRepository.save(Heart.builder().boardId(dto.getBoardId()).user(entity).build());
