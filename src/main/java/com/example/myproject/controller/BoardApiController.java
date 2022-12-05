@@ -1,11 +1,13 @@
 package com.example.myproject.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import com.example.myproject.config.auth.PrincipalDetails;
+import com.example.myproject.dto.CommentRequestDto;
 import com.example.myproject.dto.HeartDto;
-import jdk.jshell.Snippet;
-import org.springframework.http.HttpMessage;
+import com.example.myproject.entity.Comment;
+import com.example.myproject.service.CommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestController// = @Controller + @ResponseBpdy
 @RequiredArgsConstructor
 @RequestMapping("api")
-public class ApiController {
+public class BoardApiController {
 	final private BoardService boardService;
+	final private CommentService commentService;
 		/**
 		 * 게시글 리스트 조회
 		 */
@@ -90,5 +93,35 @@ public class ApiController {
 			// userid=-1, total-=1(삭제하고 count했으니 -1된거임) 해서 보냄
 			return new HeartDto(dto.getBoardId(), userId, total);
 		}
+
+		
+	// 댓글 조회
+	@GetMapping("reply/{board_Id}")
+	public List<Comment> findAll(@PathVariable("board_id")Long boardId){
+
+		return commentService.findAll(boardId);
+	}
+	//댓글 작성
+	@PostMapping("reply")
+	public Long create(@RequestBody CommentRequestDto dto){
+		// 댓글쓰면 보던 글id 리턴
+		Long boardId = commentService.save(dto).getBoardId();
+		return boardId;
+	}
+	//댓글 수정
+	@PatchMapping("reply")
+	public Long update(@RequestBody CommentRequestDto dto){
+		// 댓글쓰면 보던 글id 리턴
+		Long boardId = commentService.save(dto).getBoardId();
+		return boardId;
+	}
+	// 댓글 삭제
+	@DeleteMapping("reply/{id}")
+	public Long deleteComment(@PathVariable Long id){
+		Long boardId = commentService.deleteComment(id).getBoardId();
+		return boardId;
+	}
+
+
 
 }

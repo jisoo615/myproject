@@ -43,4 +43,6 @@ public class PageController {
 	}
 	// 여기서 로그인시 오류나면 표시
 
+	//TODO: 마이페이지
+
 }

@@ -46,7 +46,6 @@ dependencies {
 	//runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	//h2 in memory safe version:1.4.199
 	runtimeOnly 'com.h2database:h2:1.4.199'
 
