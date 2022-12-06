@@ -43,6 +43,13 @@ public class PageController {
 	}
 	// 여기서 로그인시 오류나면 표시
 
+	// 댓글 페이지
+	@GetMapping("project/{board_id}/comment")
+	public String comment(@PathVariable Long board_id, Model model){
+		model.addAttribute("board_id", board_id);
+		return "project/comment";
+	}// 어떤 글의 뎃글인지 알려주기 위해 글id를 모델에 담아 보냄 -> /*[[ ${id} ]]*/ 로 js에서 받을수있음
+
 	//TODO: 마이페이지
 
 }

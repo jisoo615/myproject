@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout_project}">
+
+<th:block layout:fragment="content">
+<!--댓글 작성하는곳-->
+    <div class="form-floating">
+        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+        <label for="floatingTextarea">Comments</label>
+    </div>
+<!--댓글조회, 해당 parent댓글엔 댓글쓰기가 붙어야함-->
+<ul>
+    <li> 리스트 말고 card로 해보기   </li>
+    <li>    </li>
+    <li>    </li>
+</ul>
+</th:block>
+
+
+<th:block layout:fragment="scripts">
+    <!-- js 부분 -->
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+    /*]]>*/
+    </script>
+
+</th:block>

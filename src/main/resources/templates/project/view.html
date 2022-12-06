@@ -36,6 +36,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
     <a onclick="goWrite()" class="btn btn-primary">수정하기</a>
     <a onClick="deleteBoard()" class="btn btn-danger">삭제하기</a>
   </div>
+    <a onclick="goComment()" class="btn btn-info">댓글</a>
 </div>
 
 </th:block>
@@ -121,7 +122,15 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layo
         }).catch(error => {
         	alert('오류가 발생하였습니다.');
         });
-	}	
+	}
+
+    /**
+     * 댓글로 가기
+     */
+    function goComment() {
+        const board_id = /*[[ ${id} ]]*/;
+    	location.href = '/project/board_id/comment';
+    }
 	
      /*]]>*/
 </script>

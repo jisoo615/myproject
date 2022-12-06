@@ -94,29 +94,29 @@ public class BoardApiController {
 			return new HeartDto(dto.getBoardId(), userId, total);
 		}
 
-		
+
 	// 댓글 조회
-	@GetMapping("reply/{board_Id}")
+	@GetMapping("comment/{board_Id}")
 	public List<Comment> findAll(@PathVariable("board_id")Long boardId){
 
 		return commentService.findAll(boardId);
 	}
 	//댓글 작성
-	@PostMapping("reply")
+	@PostMapping("comment")
 	public Long create(@RequestBody CommentRequestDto dto){
 		// 댓글쓰면 보던 글id 리턴
 		Long boardId = commentService.save(dto).getBoardId();
 		return boardId;
 	}
 	//댓글 수정
-	@PatchMapping("reply")
+	@PatchMapping("comment")
 	public Long update(@RequestBody CommentRequestDto dto){
 		// 댓글쓰면 보던 글id 리턴
 		Long boardId = commentService.save(dto).getBoardId();
 		return boardId;
 	}
 	// 댓글 삭제
-	@DeleteMapping("reply/{id}")
+	@DeleteMapping("comment/{id}")
 	public Long deleteComment(@PathVariable Long id){
 		Long boardId = commentService.deleteComment(id).getBoardId();
 		return boardId;
