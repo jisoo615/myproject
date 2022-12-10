@@ -1,29 +1,234 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout_project}">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout_project}"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><style>
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.button {
+  display: flex;
+  justify-content: center;
+}
+#modal-button {
+  cursor: pointer;
+  background-color: #04c584;
+}
+#modal-button:hover {
+  background-color: #e9e9e9;
+}
+.modal {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  background-color: #fefefe;
+  display: flex;
+  justify-content: space-between;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+}
+.modal-close {
+  float: right;
+}
+.modal-close:hover {
+  color: red;
+}
+</style></head>
+  <th:block layout:fragment="content">
+    <!--댓글 작성하는곳-->
+<div class="button"><button class="modal-button" id="modal-button"><span sec:authentication="name"></span>님으로 댓글 작성하기</button></div>
 
-<th:block layout:fragment="content">
-<!--댓글 작성하는곳-->
-    <div class="form-floating">
-        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-        <label for="floatingTextarea">Comments</label>
-    </div>
-<!--댓글조회, 해당 parent댓글엔 댓글쓰기가 붙어야함-->
-<ul>
-    <li> 리스트 말고 card로 해보기   </li>
-    <li>    </li>
-    <li>    </li>
-</ul>
-</th:block>
+<div class="modal">
+  <div class="modal-content">
+      <div class="modal-title">모달 예시</div>
+      <div id="modal">
+          <form id="modalForm">
+              <input id="writer" value="null">
+              <input type="hidden" id="id" value="0">
+              <label for="parent_id" class="col-form-label">To: </label>
+              <input class="form-control" id="parent_id" type="hidden" value="0">
+              <label for="content" class="col-form-label">내용: </label>
+              <input type="textarea" id="content"></input>
+          </form>
+          <button id="save" type="primary button" onclick="writeComment('POST')" >저장</button>
+          <button id="modify" type="primary button" onclick="writeComment('PATCH')" >수정</button>
+      </div>
+      <div class="modal-close">&times;</div>
+  </div>
+</div>
 
 
-<th:block layout:fragment="scripts">
+
+    <!--댓글조회, 해당 parent댓글엔 댓글쓰기가 붙어야함-->
+    <div id="comments"></div>
+  </th:block>
+
+  <th:block layout:fragment="scripts">
     <!-- js 부분 -->
     <script th:inline="javascript">
-    /*<![CDATA[*/
+      /*<![CDATA[*/
 
+    window.onload = () => {
+        const board_id = /*[[${board_id}]]*/
+        console.log(board_id);
+        document.getElementById("comments").innerHTML += board_id+'게시물';
+        findComment(board_id);
 
-    /*]]>*/
+        const button = document.querySelector('#modal-button');
+        const closeButton = document.querySelector('.modal-close');
+        const modalElement = document.querySelector('.modal');
+        button.addEventListener('click',(e)=>{
+        modalElement.style.display='block';
+        });
+        closeButton.addEventListener('click', (e)=>{
+        modalElement.style.display='none';
+        });
+
+ };
+
+ function modalOpen(id){
+    const modalElement = document.querySelector('.modal');
+    modalElement.style.display='block';
+
+    const comment = document.getElementById(id);
+    console.log(comment);
+    const modalForm = document.getElementById("modalForm");
+
+ }
+
+function writeComment(method) {
+      // 모달에서 저장버튼 누를 때 작동
+	const board_id = /*[[${board_id}]]*/
+    const form = document.getElementById("modalForm");
+	let message = '';
+	const params = {
+		  id: form.id.value,
+          writer: form.writer.value,
+          content: form.content.value,
+          parent_id: form.parent_id.value,
+          board_id: board_id
+        };
+
+	  if(method =='POST'){
+		message = '댓글이 정상 등록되었습니다.';
+	  }
+	  else if(method=='PATCH'){
+	    message = '댓글이 정상 수정 되었습니다';
+	  }else{
+		alert("오류가 발생하였습니다.");
+		return false;
+	  }
+
+        fetch('/api/comment', {
+          method: method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(params),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Request failed...");
+            }
+            alert(message);
+            location.reload();
+          })
+          .catch((error) => {
+            alert("오류가 발생하였습니다.");
+          });
+      }
+
+      function findComment(board_id) {
+        fetch(`/api/comment/${board_id}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Request failed...");
+            }
+            return response.json();
+          })
+          .then((json) => {
+            let html = "";
+            console.table(json);
+            console.log(json);
+
+            if (!json.length) {
+              document.getElementById("comments").innerHTML +=
+                '<p colspan="5">댓글이 없습니다.</p>';
+              return false;
+            }
+            json.forEach((obj, idx) => {
+              console.log("idx: " + idx);
+              console.log("id: " + obj.id);
+              console.log("parent_id: " + obj.parent_id);
+
+              if (obj.id == obj.parent_id) {
+                // 첫 댓글일때
+               html += `
+                    <div class="card" style="width: 25rem;" id="id-${obj.id}">
+                        <div class="card-body">
+                            <p id="parent_id">${obj.parent_id}</p>
+                            <p class="card-title">${obj.writer}</p>
+                            <p class="card-subtitle mb-2 text-muted" id="created_date">${obj.created_date}</p>
+                            <p class="card-text" id="content">${obj.content}</p>
+                            <a class="card-link" href="javascript:void(0); onclick="deleteComment(${obj.id})">삭제</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.id})" >수정</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.parent_id})">답글쓰기</a>
+                        </div>
+                    </div>
+                    `;
+
+              } else {
+                // 대댓글 일때
+                html += `
+                    <div class="card" style="width: 25rem; left: 10%" id="id-${obj.id}">
+                        <div class="card-body">
+                            <p>대댓글</p>
+                            <div id="parent_id">${obj.parent_id}</div>
+                            <div class="card-title">${obj.writer}</div>
+                            <p class="card-subtitle mb-2 text-muted" id="created_date">${obj.created_date}</p>
+                            <p class="card-text" id="content">${obj.content}</p>
+                            <a class="card-link" href="javascript:void(0); onclick="deleteComment(${obj.id})">삭제</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.id})" >수정</a>
+                        </div>
+                    </div>
+                    `;
+              }
+            });
+            document.getElementById("comments").innerHTML = html;
+          });
+      }
+
+      function deleteComment(id){
+        if ( !confirm(`댓글을 삭제할까요?`) ) {
+        	return false;
+        }
+        fetch(`/api/comment/${id}`, {
+        	method: 'DELETE',
+          	headers: { 'Content-Type': 'application/json' },
+
+        }).then(response => {
+        	if (!response.ok) {
+           		throw new Error('Request failed...');
+          	}
+          	alert('삭제되었습니다.');
+          	findComment(/*[[${board_id}]]*/);
+
+        }).catch(error => {
+        	alert('오류가 발생하였습니다.');
+        });
+      }
+
+      /*]]>*/
     </script>
-
-</th:block>
+  </th:block>
+</html>

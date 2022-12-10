@@ -1,11 +1,13 @@
 package com.example.myproject.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@JsonNaming(value=PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

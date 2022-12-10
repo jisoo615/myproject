@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByboardIdOrderByParentIdAscIdAsc(@Param("boardId") Long boardId);
+    List<Comment> findAllByboardIdOrderByParentIdAscIdAsc(Long boardId);
 
     Comment save(Comment comment);
 

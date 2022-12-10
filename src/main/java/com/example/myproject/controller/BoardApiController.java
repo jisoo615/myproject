@@ -96,15 +96,18 @@ public class BoardApiController {
 
 
 	// 댓글 조회
-	@GetMapping("comment/{board_Id}")
-	public List<Comment> findAll(@PathVariable("board_id")Long boardId){
-
+	@GetMapping("comment/{board_id}")
+	public List<Comment> findAll(@PathVariable("board_id") Long boardId){
+		log.info(boardId+"번 게시물 댓글 조회 api");
 		return commentService.findAll(boardId);
 	}
 	//댓글 작성
 	@PostMapping("comment")
-	public Long create(@RequestBody CommentRequestDto dto){
+	public Long create(@RequestBody CommentRequestDto dto,
+					   @AuthenticationPrincipal PrincipalDetails principalDetails){
 		// 댓글쓰면 보던 글id 리턴
+		log.info("댓글 작성 dto={}", dto );
+		dto.setWriter(principalDetails.getUsername());
 		Long boardId = commentService.save(dto).getBoardId();
 		return boardId;
 	}

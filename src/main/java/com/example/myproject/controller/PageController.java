@@ -45,8 +45,8 @@ public class PageController {
 
 	// 댓글 페이지
 	@GetMapping("project/{board_id}/comment")
-	public String comment(@PathVariable Long board_id, Model model){
-		model.addAttribute("board_id", board_id);
+	public String comment(@PathVariable("board_id") Long boardId, Model model){
+		model.addAttribute("board_id", boardId);
 		return "project/comment";
 	}// 어떤 글의 뎃글인지 알려주기 위해 글id를 모델에 담아 보냄 -> /*[[ ${id} ]]*/ 로 js에서 받을수있음
 

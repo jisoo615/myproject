@@ -26,6 +26,11 @@ public class CommentService {
                 .boardId(dto.getBoardId())
                 .build();
         entity = commentRepository.save(entity);
+        if(dto.getParentId()==0){
+            Long parentId = entity.getId();
+            entity.setParentId(parentId);
+            entity = commentRepository.save(entity);
+        }
         return entity;
     }
     @Transactional

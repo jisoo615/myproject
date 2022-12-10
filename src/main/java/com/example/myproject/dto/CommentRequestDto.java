@@ -1,9 +1,14 @@
 package com.example.myproject.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@JsonNaming(value= PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor
+@Data
 public class CommentRequestDto {// customer->server
     Long boardId;
     Long id;
@@ -13,7 +18,7 @@ public class CommentRequestDto {// customer->server
 
     @Builder
     public CommentRequestDto(Long boardId, Long id, String content, String writer, Long parentId){
-        this.boardId = boardId; this.content = content; this.id=id; this.writer = writer; this.parentId = parentId;
+        this.boardId = boardId; this.content = content; this.id = id; this.writer = writer; this.parentId = parentId;
     }
 
     }
