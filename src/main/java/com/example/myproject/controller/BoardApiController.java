@@ -115,7 +115,7 @@ public class BoardApiController {
 	@PatchMapping("comment")
 	public Long update(@RequestBody CommentRequestDto dto){
 		// 댓글쓰면 보던 글id 리턴
-		Long boardId = commentService.save(dto).getBoardId();
+		Long boardId = commentService.update(dto).getBoardId();
 		return boardId;
 	}
 	// 댓글 삭제

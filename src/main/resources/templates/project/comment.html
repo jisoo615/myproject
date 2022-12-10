@@ -45,6 +45,11 @@ body {
 .modal-close:hover {
   color: red;
 }
+input:disabled{
+    border: 0px;
+    background: none;
+}
+
 </style></head>
   <th:block layout:fragment="content">
     <!--댓글 작성하는곳-->
@@ -55,15 +60,16 @@ body {
       <div class="modal-title">모달 예시</div>
       <div id="modal">
           <form id="modalForm">
-              <input id="writer" value="null">
-              <input type="hidden" id="id" value="0">
-              <label for="parent_id" class="col-form-label">To: </label>
-              <input class="form-control" id="parent_id" type="hidden" value="0">
-              <label for="content" class="col-form-label">내용: </label>
-              <input type="textarea" id="content"></input>
+              작성자<input id="writer" value="null">
+              id<input id="id" value="0">
+              <input type="text" id="parent_writer" value="null">
+              <label for="parent_id" class="col-form-label" ></label>
+              parent_id: <input class="form-control" id="parent_id" value="0">
+              <label for="content" class="col-form-label" value="내용">내용: </label>
+              <input type="textarea" id="content">
           </form>
-          <button id="save" type="primary button" onclick="writeComment('POST')" >저장</button>
-          <button id="modify" type="primary button" onclick="writeComment('PATCH')" >수정</button>
+          <button id="saveBtn" type="primary button" onclick="writeComment('POST')" >저장</button>
+          <button id="modiBtn" type="primary button" onclick="writeComment('PATCH')" >수정</button>
       </div>
       <div class="modal-close">&times;</div>
   </div>
@@ -91,20 +97,46 @@ body {
         const modalElement = document.querySelector('.modal');
         button.addEventListener('click',(e)=>{
         modalElement.style.display='block';
+        document.getElementById('modiBtn').style.display='none';
         });
         closeButton.addEventListener('click', (e)=>{
         modalElement.style.display='none';
+        document.getElementById('modiBtn').style.display='block';
         });
-
  };
+ function modalReply(parent_id){
+    const modalElement = document.querySelector('.modal');
+    modalElement.style.display='block';
+    document.getElementById('modiBtn').style.display="none";
 
- function modalOpen(id){
+    const parentComment = document.getElementById(parent_id);// 집어넣을 값
+    const modalForm = document.getElementById("modalForm");// 집어넣을 곳
+    // hidden : id, parent_id,
+    // 전달할 값: parent_id,
+    modalForm.parent_id.value = parentComment.id.value;
+    modalForm.parent_writer.value = parentComment.writer.value;
+    modalForm.parent_writer.innertext = '에게 답글 작성중';
+
+ }
+ function modalModi(id){
+    document.getElementById('saveBtn').style.display="none";
     const modalElement = document.querySelector('.modal');
     modalElement.style.display='block';
 
-    const comment = document.getElementById(id);
-    console.log(comment);
-    const modalForm = document.getElementById("modalForm");
+    const commentForm = document.getElementById(id);// 집어넣을 값
+    const modalForm = document.getElementById("modalForm");// 집어넣을 곳
+    // hidden : id, parent_id,
+    modalForm.id.value = commentForm.id.value;
+    modalForm.parent_id.value = commentForm.parent_id.value;
+    modalForm.content.value = commentForm.content.value;
+    modalForm.id.value = commentForm.id.value;
+
+    if(commentForm.parent_id.value==0){
+       modalForm.parent_writer.style.display="none";
+    }else{
+        modalForm.parent_writer.value = commentForm.parent_writer.value;
+        modalForm.parent_writer.innertext = '에게 답글 작성중';
+    }
 
  }
 
@@ -158,6 +190,7 @@ function writeComment(method) {
           })
           .then((json) => {
             let html = "";
+            let parent_writer = '';
             console.table(json);
             console.log(json);
 
@@ -173,34 +206,37 @@ function writeComment(method) {
 
               if (obj.id == obj.parent_id) {
                 // 첫 댓글일때
+               parent_writer = obj.writer;
                html += `
-                    <div class="card" style="width: 25rem;" id="id-${obj.id}">
+                    <form class="card" style="width: 25rem;" id="${obj.id}">
                         <div class="card-body">
-                            <p id="parent_id">${obj.parent_id}</p>
-                            <p class="card-title">${obj.writer}</p>
-                            <p class="card-subtitle mb-2 text-muted" id="created_date">${obj.created_date}</p>
-                            <p class="card-text" id="content">${obj.content}</p>
-                            <a class="card-link" href="javascript:void(0); onclick="deleteComment(${obj.id})">삭제</a>
-                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.id})" >수정</a>
-                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.parent_id})">답글쓰기</a>
+                            <input id="id" value="${obj.id}" disabled="true">
+                            <input id="parent_id" value="${obj.parent_id}" disabled="true">
+                            <input class="card-title" id="writer" value="${obj.writer}" disabled="true">
+                            <input class="card-subtitle mb-2 text-muted" id="created_date" value="${obj.created_date}" disabled="true">
+                            <input class="card-text" id="content" value="${obj.content}" disabled="true">
+                            <a class="card-link" href="javascript:void(0);" onclick="deleteComment(${obj.id})">삭제</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalModi(${obj.id})" >수정</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalReply(${obj.id})">답글쓰기</a>
                         </div>
-                    </div>
+                    </form>
                     `;
 
               } else {
                 // 대댓글 일때
                 html += `
-                    <div class="card" style="width: 25rem; left: 10%" id="id-${obj.id}">
+                    <form class="card" style="width: 25rem; left: 8%" id="${obj.id}" >
                         <div class="card-body">
-                            <p>대댓글</p>
-                            <div id="parent_id">${obj.parent_id}</div>
-                            <div class="card-title">${obj.writer}</div>
-                            <p class="card-subtitle mb-2 text-muted" id="created_date">${obj.created_date}</p>
-                            <p class="card-text" id="content">${obj.content}</p>
-                            <a class="card-link" href="javascript:void(0); onclick="deleteComment(${obj.id})">삭제</a>
-                            <a class="card-link" href="javascript:void(0);" onclick="modalOpen(${obj.id})" >수정</a>
+                            <input id="parent_writer" value="${parent_writer}" disabled="true">에게 답장
+                            <input id="id" value="${obj.id}" disabled="true">
+                            <input id="parent_id" value="${obj.parent_id}" disabled="true">
+                            <input class="card-title" id="writer" value="${obj.writer}" disabled="true">
+                            <input class="card-subtitle mb-2 text-muted" id="created_date" value="${obj.created_date}" disabled="true">
+                            <input class="card-text" id="content" value="${obj.content}" disabled="true">
+                            <a class="card-link" href="javascript:void(0);" onclick="deleteComment(${obj.id})">삭제</a>
+                            <a class="card-link" href="javascript:void(0);" onclick="modalModi(${obj.id})" >수정</a>
                         </div>
-                    </div>
+                    </form>
                     `;
               }
             });
