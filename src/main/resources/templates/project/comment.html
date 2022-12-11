@@ -60,11 +60,11 @@ input:disabled{
       <div class="modal-title">모달 예시</div>
       <div id="modal">
           <form id="modalForm">
-              작성자<input id="writer" value="null">
-              id<input id="id" value="0">
-              <input type="text" id="parent_writer" value="null">
+              작성자<input type="hidden" id="writer" value="null">
+              id<input type="hidden" id="id" value="0">
+              <input type="hidden" id="parent_writer" value="null">
               <label for="parent_id" class="col-form-label" ></label>
-              parent_id: <input class="form-control" id="parent_id" value="0">
+              <input type="hidden" class="form-control" id="parent_id" value="0">
               <label for="content" class="col-form-label" value="내용">내용: </label>
               <input type="textarea" id="content">
           </form>
@@ -190,6 +190,7 @@ function writeComment(method) {
           })
           .then((json) => {
             let html = "";
+            let content = '';
             let parent_writer = '';
             console.table(json);
             console.log(json);
@@ -200,9 +201,8 @@ function writeComment(method) {
               return false;
             }
             json.forEach((obj, idx) => {
-              console.log("idx: " + idx);
-              console.log("id: " + obj.id);
-              console.log("parent_id: " + obj.parent_id);
+              if(obj.deleted_yn=="Y"){content = '삭제된 댓글입니다.';}
+              else content = obj.content;
 
               if (obj.id == obj.parent_id) {
                 // 첫 댓글일때
@@ -210,11 +210,11 @@ function writeComment(method) {
                html += `
                     <form class="card" style="width: 25rem;" id="${obj.id}">
                         <div class="card-body">
-                            <input id="id" value="${obj.id}" disabled="true">
-                            <input id="parent_id" value="${obj.parent_id}" disabled="true">
+                            <input type="hidden" id="id" value="${obj.id}" disabled="true">
+                            <input type="hidden" id="parent_id" value="${obj.parent_id}" disabled="true">
                             <input class="card-title" id="writer" value="${obj.writer}" disabled="true">
+                            <input class="card-text" id="content" value="${content}" disabled="true">
                             <input class="card-subtitle mb-2 text-muted" id="created_date" value="${obj.created_date}" disabled="true">
-                            <input class="card-text" id="content" value="${obj.content}" disabled="true">
                             <a class="card-link" href="javascript:void(0);" onclick="deleteComment(${obj.id})">삭제</a>
                             <a class="card-link" href="javascript:void(0);" onclick="modalModi(${obj.id})" >수정</a>
                             <a class="card-link" href="javascript:void(0);" onclick="modalReply(${obj.id})">답글쓰기</a>
@@ -228,11 +228,11 @@ function writeComment(method) {
                     <form class="card" style="width: 25rem; left: 8%" id="${obj.id}" >
                         <div class="card-body">
                             <input id="parent_writer" value="${parent_writer}" disabled="true">에게 답장
-                            <input id="id" value="${obj.id}" disabled="true">
-                            <input id="parent_id" value="${obj.parent_id}" disabled="true">
+                            <input type="hidden" id="id" value="${obj.id}" disabled="true">
+                            <input type="hidden" id="parent_id" value="${obj.parent_id}" disabled="true">
                             <input class="card-title" id="writer" value="${obj.writer}" disabled="true">
+                            <input class="card-text" id="content" value="${content}" disabled="true">
                             <input class="card-subtitle mb-2 text-muted" id="created_date" value="${obj.created_date}" disabled="true">
-                            <input class="card-text" id="content" value="${obj.content}" disabled="true">
                             <a class="card-link" href="javascript:void(0);" onclick="deleteComment(${obj.id})">삭제</a>
                             <a class="card-link" href="javascript:void(0);" onclick="modalModi(${obj.id})" >수정</a>
                         </div>
