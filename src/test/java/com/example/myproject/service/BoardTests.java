@@ -19,6 +19,7 @@ import com.example.myproject.service.BoardService;
 @SpringBootTest
 public class BoardTests {
 	@Autowired BoardService boardService;
+	@Autowired HeartService heartService;
 	@Autowired BoardRepository boardRepo;
 	@Autowired HeartRepository heartRepository;
 	@Autowired UserRepository userRepository;
@@ -98,19 +99,19 @@ public class BoardTests {
 	void saveHeart(){
 		saveBoard();
 		var request = createHeartRequest();
-		boardService.createHeart(request);
+//		heartService.createHeart(request);
 		var entity = heartRepository.findByBoardIdAndUserId(request.getBoardId(), request.getUserId());
 		if(entity.isEmpty()) return;
 		Heart heart = entity.get();
 		assertThat(heart.getBoardId()).isEqualTo((long)1);
 		assertThat(heart.getUser().getId()).isEqualTo((long)1);
-		assertThat(boardService.countByBoardId(request.getBoardId())).isEqualTo((long)1);
+		assertThat(heartService.countByBoardId(request.getBoardId())).isEqualTo((long)1);
 	}
 	@Test
 	void deleteHeart(){
 		saveHeart();
-		boardService.deleteHeart((long)1, (long)1);
-		assertThat(boardService.countByBoardId((long)1)).isEqualTo((long)0);
+		heartService.deleteHeart((long)1, "test_0000");
+		assertThat(heartService.countByBoardId((long)1)).isEqualTo((long)0);
 	}
 
 }

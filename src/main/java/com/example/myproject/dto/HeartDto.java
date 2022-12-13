@@ -11,11 +11,13 @@ public class HeartDto {// 해당 게시글에, 접속자의 하트여부(id/-1)/
     private Long boardId;
     private Long userId;// userId -> username 변경 : 프론트는 userId 모름
     private Long total;
+    private boolean isFull;
 
     @Builder
-    public HeartDto(Long boardId, Long userId, Long total){
+    public HeartDto(Long boardId, Long userId, Long total, boolean isFull){
         this.boardId = boardId;
         this.userId = userId;
         this.total = total;
+        this.isFull = isFull;
     }
 }

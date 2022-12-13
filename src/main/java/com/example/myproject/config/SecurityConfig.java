@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 "/v2/**",
                 "/swagger*/**").permitAll()
 		.antMatchers("/h2-console/**").permitAll()
+		.antMatchers("/images/**").permitAll()
         .anyRequest().authenticated() // 이외의 모든 request들은 인증이 되어야만 한다
 		.and()
 				.formLogin()

@@ -30,7 +30,6 @@ public class BoardService {
 	private final BoardRepository boardRepository;
 	private final BoardMapper boardMapper;
 	private final UserRepository userRepository;
-	private final HeartRepository heartRepository;
 	
 	//최신글 위로가게 전체 조회
 	public List<BoardResponseDto> findAll() {
@@ -115,27 +114,6 @@ public class BoardService {
 	    response.put("params", params);
 	    response.put("list", list);
 	    return response;
-	}
-
-	public void createHeart(HeartDto dto){// 하트 누름
-		User entity = userRepository.findById(dto.getUserId()).get();
-		heartRepository.save(Heart.builder().boardId(dto.getBoardId()).user(entity).build());
-	}
-	@Transactional
-	public void deleteHeart(Long boardId, Long userId){// 하트 취소
-		heartRepository.deleteByBoardIdAndUserId(boardId, userId);
-		return;
-	}
-
-	public Long findIsHeartedById(Long boardId, Long userId){// 해당 게시글에 접속자가 하트 눌렀는지
-		Optional<Heart> optional = heartRepository.findByBoardIdAndUserId(userId, boardId);
-		if(optional.isEmpty()) return userId = (long)-1;// 누르지 않았으면 return -1
-		return optional.get().getUser().getId();// 눌렀으면 return userId;
-	}
-
-	public Long countByBoardId(Long boardId){// 게시글의 총 하트 수
-		Long total = heartRepository.countByBoardId(boardId);
-		return total;
 	}
 
 }
