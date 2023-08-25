@@ -34,11 +34,10 @@
 
 - 글 작성, 수정, 삭제 읽기 기능
 - 페이징 처리
-  <img src="https://github.com/jisoo615/myproject/assets/57720285/37abea35-9b08-4bc1-a785-8f70ef41bdb5" width="50%">
-
-
+ <img src="https://github.com/jisoo615/myproject/assets/57720285/37abea35-9b08-4bc1-a785-8f70ef41bdb5" width="50%">
+ 
 - 검색 기능
-  <img src="https://github.com/jisoo615/myproject/assets/57720285/8d137623-d076-4739-8f0c-b41c88507adc" width="50%">
+ <img src="https://github.com/jisoo615/myproject/assets/57720285/8d137623-d076-4739-8f0c-b41c88507adc" width="50%">
 
     
 - 회원가입/로그인 기능 - 카카오/네이버 로그인
